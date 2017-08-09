@@ -1,0 +1,30 @@
+{
+  "name": "ImdbApi",
+  "version": "0.1.0",
+  "description": "An API to query movie and actor information",
+  "main": "server.js",
+  "author": {
+    "name": "Mohamad Elarabi",
+    "email": "arabisoft@gmail.com"
+  },
+  "scripts": {
+    "start": "npm-run-all --parallel lint:watch",
+    "lint": "esw ./controllers --color",
+    "lint:watch": "npm run lint -- --watch",
+    "security-check": "nsp check"
+  },
+  "dependencies": {
+    "eslint": "3.8.1",
+    "eslint-plugin-import": "2.0.1",
+    "eslint-watch": "2.1.14",
+    "express": "~3.4.8",
+    "npm-run-all": "3.1.1",
+    "nsp": "2.6.2",
+    "tedious": "^2.0.0",
+    "underscore": "~1.6.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-nodemon": "~0.2.0"
+  }
+}
