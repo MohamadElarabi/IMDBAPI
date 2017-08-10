@@ -4,21 +4,15 @@
     var Request = require('tedious').Request;
 
     app.get("/artist", (req, res) => {
-      var id = req.query.id;
+      return getUsers(req, res);
+    });
+
+    app.get("/artist/:id", (req, res) => {
+      var id = req.params.id;
       var whereClause = "";
 
       if (id) whereClause = ` where ArtistId = ${id}`;
-      request = new Request(`select * from Artist ${whereClause};`, (err, rowCount) => {
-        if (err) {
-          console.log(err);
-        }
-      });
-
-      request.on('doneInProc', (rowCount, more, rows) => {
-        res.send(util.simplifyRows(rows));
-      });
-
-      util.executeRequest(request);
+      return getUsers(req, res, whereClause);
     });
 
     app.post("/artist", (req, res) => {
@@ -27,13 +21,14 @@
       var bio = req.body.bio ? req.body.bio : '';
 
       if (firstName === '') {
-        res.send('FirstName must be specified');
+        res.status(400).send('FirstName must be specified');
         return;
       }
 
       request = new Request(`insert into artist values ('${firstName}','${lastName}','${bio}'); select * from Artist where ArtistId = (select @@identity);`, (err, rowCount) => {
         if (err) {
           console.log(err);
+          res.status(500).send(err);
         }
       });
       var responsesLeft = 2;
@@ -45,6 +40,47 @@
 
       util.executeRequest(request);
     });
+
+    app.get("/artist/:id/feature", (req, res) => {
+      var id = req.params.id;
+
+      if (id === '') {
+        res.status(400).send('id must be specified');
+        return;
+      }
+
+      request = new Request(`select distinct f.* from featurerole fr inner join feature f on f.FeatureId = fr.FeatureId where artistId = ${id};`, (err, rowCount) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send(err);
+        }
+      });
+
+      request.on('doneInProc', (rowCount, more, rows) => {
+        res.send(util.simplifyRows(rows));
+      });
+
+      util.executeRequest(request);
+    });
+
+    var getUsers = (req, res, whereClause) => {
+      request = new Request(`select * from Artist ${whereClause};`, (err, rowCount) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send(err);
+        }
+      });
+
+      request.on('doneInProc', (rowCount, more, rows) => {
+        if (rowCount === 0) {
+          res.status(404).send('Not found');
+        }
+        res.send(util.simplifyRows(rows));
+      });
+
+      util.executeRequest(request);
+    };
+
   };
 
 })(module.exports);
