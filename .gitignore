@@ -57,3 +57,8 @@ typings/
 # dotenv environment variables file
 .env
 
+/.vs/IMDBAPI/v14/*.suo
+/*.njsproj
+/bin/Microsoft.NodejsTools.WebRole.dll
+/obj/Debug/IMDBAPI.njsproj.FileListAbsolute.txt
+/obj/Debug/IMDBAPI.njsprojResolveAssemblyReference.cache
