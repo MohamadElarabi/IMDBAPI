@@ -20,8 +20,10 @@
 
       if (!id) {
         res.status(400).send("id must be specified");
+        return;
       }
-      request = new Request(`select a.*, fr.RoleTypeId from featurerole fr inner join artist a on fr.artistid = a.artistid where fr.featureId = ${id};`, (err, rowCount) => {
+
+      var request = new Request(`select a.*, fr.RoleTypeId from featurerole fr inner join artist a on fr.artistid = a.artistid where fr.featureId = ${id};`, (err, rowCount) => {
         if (err) {
           console.log(err);
           res.status(500).send(err);
@@ -31,6 +33,7 @@
       request.on('doneInProc', (rowCount, more, rows) => {
         if (rowCount === 0) {
           res.status(404).send('Not found');
+          return;
         }
         res.send(util.simplifyRows(rows));
       });
@@ -48,7 +51,7 @@
         return;
       }
 
-      request = new Request(`insert into feature values ('${name}','${description}','${featureTypeId}'); select * from Feature where FeatureId = (select @@identity);`, (err, rowCount) => {
+      var request = new Request(`insert into feature values ('${name}','${description}','${featureTypeId}'); select * from Feature where FeatureId = (select @@identity);`, (err, rowCount) => {
         if (err) {
           console.log(err);
           res.status(500).send(err);
@@ -65,7 +68,7 @@
     });
 
     var getFeature = (req, res, whereClause) => {
-      request = new Request(`select * from Feature ${whereClause};`, (err, rowCount) => {
+      var request = new Request(`select * from Feature ${whereClause};`, (err, rowCount) => {
         if (err) {
           console.log(err);
           res.status(500).send(err);
@@ -75,6 +78,7 @@
       request.on('doneInProc', (rowCount, more, rows) => {
         if (rowCount === 0) {
           res.status(404).send('Not found');
+          return;
         }
         res.send(util.simplifyRows(rows));
       });

@@ -1,4 +1,4 @@
-﻿((artistController)=> {
+﻿((artistController) => {
 
   artistController.init = (app, util) => {
     var Request = require('tedious').Request;
@@ -25,7 +25,7 @@
         return;
       }
 
-      request = new Request(`insert into artist values ('${firstName}','${lastName}','${bio}'); select * from Artist where ArtistId = (select @@identity);`, (err, rowCount) => {
+      var request = new Request(`insert into artist values ('${firstName}','${lastName}','${bio}'); select * from Artist where ArtistId = (select @@identity);`, (err, rowCount) => {
         if (err) {
           console.log(err);
           res.status(500).send(err);
@@ -49,7 +49,7 @@
         return;
       }
 
-      request = new Request(`select distinct f.* from featurerole fr inner join feature f on f.FeatureId = fr.FeatureId where artistId = ${id};`, (err, rowCount) => {
+      var request = new Request(`select distinct f.* from featurerole fr inner join feature f on f.FeatureId = fr.FeatureId where artistId = ${id};`, (err, rowCount) => {
         if (err) {
           console.log(err);
           res.status(500).send(err);
@@ -59,6 +59,7 @@
       request.on('doneInProc', (rowCount, more, rows) => {
         if (rowCount === 0) {
           res.status(404).send('Not found');
+          return;
         }
         res.send(util.simplifyRows(rows));
       });
@@ -67,7 +68,7 @@
     });
 
     var getUsers = (req, res, whereClause) => {
-      request = new Request(`select * from Artist ${whereClause};`, (err, rowCount) => {
+      var request = new Request(`select * from Artist ${whereClause};`, (err, rowCount) => {
         if (err) {
           console.log(err);
           res.status(500).send(err);
@@ -77,6 +78,7 @@
       request.on('doneInProc', (rowCount, more, rows) => {
         if (rowCount === 0) {
           res.status(404).send('Not found');
+          return;
         }
         res.send(util.simplifyRows(rows));
       });

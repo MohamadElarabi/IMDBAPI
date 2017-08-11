@@ -1,7 +1,7 @@
 var http = require("http");
 var express = require("express");
 var app = express();
-//var ejsEngine = require("ejs-locals");
+var bodyParser = require("body-parser");
 var controllers = require("./controllers");
 var ConnectionOpen = false;
 var Connection = require('tedious').Connection;
@@ -13,8 +13,8 @@ var dbConfig = {
 };
 
 // Opt into Services
-app.use(express.urlencoded());
-app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 //Open DB Connection
 var connection = new Connection(dbConfig);
