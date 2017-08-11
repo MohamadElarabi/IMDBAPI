@@ -57,6 +57,9 @@
       });
 
       request.on('doneInProc', (rowCount, more, rows) => {
+        if (rowCount === 0) {
+          res.status(404).send('Not found');
+        }
         res.send(util.simplifyRows(rows));
       });
 
