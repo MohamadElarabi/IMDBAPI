@@ -4,7 +4,7 @@
     var Request = require('tedious').Request;
 
     app.get("/artist", (req, res) => {
-      return getUsers(req, res);
+      return getArtists(req, res);
     });
 
     app.get("/artist/:id", (req, res) => {
@@ -12,7 +12,7 @@
       var whereClause = "";
 
       if (id) whereClause = ` where ArtistId = ${id}`;
-      return getUsers(req, res, whereClause);
+      return getArtists(req, res, whereClause);
     });
 
     app.post("/artist", (req, res) => {
@@ -67,7 +67,7 @@
       util.executeRequest(request);
     });
 
-    var getUsers = (req, res, whereClause) => {
+    var getArtists = (req, res, whereClause) => {
       var request = new Request(`select * from Artist ${whereClause};`, (err, rowCount) => {
         if (err) {
           console.log(err);
